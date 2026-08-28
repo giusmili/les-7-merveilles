@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const siteUrl = "https://les-7-merveilles.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Les Sept Merveilles du Monde",
   description: "Un voyage éditorial immersif autour des sept nouvelles merveilles du monde.",
   manifest: "/site.webmanifest",
@@ -15,6 +18,25 @@ export const metadata: Metadata = {
   },
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Les Sept Merveilles du Monde",
+  url: siteUrl,
+  description: "Un voyage éditorial immersif autour des sept nouvelles merveilles du monde.",
+  inLanguage: "fr",
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="fr"><body>{children}</body></html>;
+  return (
+    <html lang="fr">
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+        {children}
+      </body>
+    </html>
+  );
 }

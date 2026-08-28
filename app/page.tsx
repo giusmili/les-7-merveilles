@@ -8,10 +8,31 @@ const wonders = [
   { number: "07", name: "Le Taj Mahal", place: "Inde", tag: "Marbre et lumière", text: "Observer le marbre blanc changer de teinte avec le soleil et découvrir un monument pensé comme une déclaration d’amour.", accent: "indigo" },
 ];
 
+const wondersJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Les sept nouvelles merveilles du monde",
+  itemListElement: wonders.map((wonder, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "TouristAttraction",
+      name: wonder.name,
+      description: wonder.text,
+      address: { "@type": "PostalAddress", addressCountry: wonder.place },
+    },
+  })),
+};
+
 export default function Home() {
   return (
-    <main>
-      <section className="hero" id="accueil">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(wondersJsonLd) }}
+      />
+      <main>
+        <section className="hero" id="accueil">
         <nav className="nav" aria-label="Navigation principale">
           <a className="brand" href="#accueil" aria-label="Retour à l’accueil"><span className="brand-mark">7</span><span>Merveilles<br />du monde</span></a>
           <div className="nav-links"><a href="#merveilles">Les merveilles</a><a href="#itineraire">L’itinéraire</a></div>
@@ -58,6 +79,7 @@ export default function Home() {
 
       <section className="finale"><span className="section-index">03 / 03</span><p className="eyebrow dark">Le prochain départ</p><h2>Le monde est vaste.<br /><em>Commencez ici.</em></h2><a href="#accueil">Revenir au départ <span aria-hidden="true">↑</span></a></section>
       <footer><div className="brand footer-brand"><span className="brand-mark">7</span><span>Merveilles<br />du monde</span></div><p>Un voyage éditorial autour des nouvelles merveilles du monde.<br /><small>© {new Date().getFullYear()} GiusMili</small></p><a href="#accueil">Haut de page</a></footer>
-    </main>
+      </main>
+    </>
   );
 }
