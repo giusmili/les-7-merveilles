@@ -1,46 +1,46 @@
 # vinext-starter
 
-A clean full-stack starter running on
-[vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and
-Drizzle support.
+Un starter full-stack propre qui tourne sur
+[vinext](https://github.com/cloudflare/vinext), avec un support optionnel de Cloudflare D1 et
+Drizzle.
 
-## Prerequisites
+## Prérequis
 
 - Node.js `>=22.13.0`
-- Linux with `flock`, `curl`, and GNU `timeout`
+- Linux avec `flock`, `curl`, et GNU `timeout`
 
-## Sites Lifecycle
+## Cycle de vie Sites
 
-The Sites lifecycle CLI runs the locked dependency install before returning this checkout. Edit the source under `app/`, then checkpoint when a coherent milestone is ready to inspect or share. The remote Sites builder runs `npm run build` against the pushed commit. Do not repeat install or build as a normal pre-checkpoint step.
+Le CLI de cycle de vie Sites exécute l'installation verrouillée des dépendances avant de restituer ce checkout. Modifie le code source sous `app/`, puis effectue un checkpoint quand un jalon cohérent est prêt à être inspecté ou partagé. Le builder distant de Sites exécute `npm run build` sur le commit poussé. Ne répète pas l'installation ou le build en tant qu'étape normale avant un checkpoint.
 
-This starter does not use `wrangler.jsonc`.
+Ce starter n'utilise pas `wrangler.jsonc`.
 
-`install:ci` is intentionally a single, non-retrying `npm ci`. It refuses a concurrent install for the same project, consumes a matching image-seeded npm cache with `--prefer-offline` while retaining registry fallback for a missing cache object, otherwise downloads and verifies the complete vinext tarball recorded in `package-lock.json`, limits npm to one socket, and terminates a stalled install. `build` applies a short timeout. These helpers target Linux and use GNU `timeout`; they are not native macOS scripts.
+`install:ci` est volontairement un `npm ci` unique, sans nouvelle tentative. Il refuse une installation concurrente pour le même projet, consomme un cache npm correspondant préchargé dans l'image avec `--prefer-offline` tout en conservant un repli vers le registre en cas d'objet de cache manquant, sinon télécharge et vérifie l'archive vinext complète enregistrée dans `package-lock.json`, limite npm à un seul socket, et termine une installation bloquée. `build` applique un timeout court. Ces scripts d'assistance ciblent Linux et utilisent GNU `timeout` ; ce ne sont pas des scripts natifs macOS.
 
-Scripts that need writable project-scoped home, npm, XDG, and temporary paths use `scripts/sites-env.sh`. The `dev` and `start` scripts honor the caller's runtime environment and keep Wrangler logs inside the checkout. The generated `.sites-runtime/` directory is disposable and ignored by Git.
+Les scripts qui ont besoin de chemins home, npm, XDG et temporaires inscriptibles et propres au projet utilisent `scripts/sites-env.sh`. Les scripts `dev` et `start` respectent l'environnement d'exécution de l'appelant et conservent les logs Wrangler à l'intérieur du checkout. Le répertoire généré `.sites-runtime/` est jetable et ignoré par Git.
 
-## Included Shape
+## Contenu inclus
 
-- edit site code under `app/`
-- `app/chatgpt-auth.ts` provides optional dispatch-owned ChatGPT sign-in helpers
-- `.openai/hosting.json` declares optional Sites D1 and R2 bindings
-- `vite.config.ts` simulates declared bindings for local development
-- `db/index.ts` reads the D1 binding from the Cloudflare Worker environment
-- `db/schema.ts` starts intentionally empty
-- `examples/d1/` contains an optional D1 example surface
-- `drizzle.config.ts` supports local migration generation when needed
+- modifie le code du site sous `app/`
+- `app/chatgpt-auth.ts` fournit des helpers optionnels de connexion ChatGPT gérés par le dispatch
+- `.openai/hosting.json` déclare les bindings optionnels Sites D1 et R2
+- `vite.config.ts` simule les bindings déclarés pour le développement local
+- `db/index.ts` lit le binding D1 depuis l'environnement du Cloudflare Worker
+- `db/schema.ts` démarre volontairement vide
+- `examples/d1/` contient une surface d'exemple D1 optionnelle
+- `drizzle.config.ts` permet la génération de migrations locales si besoin
 
-## Workspace Auth Headers
+## En-têtes d'authentification Workspace
 
-OpenAI workspace sites can read the current user's email from
+Les sites workspace OpenAI peuvent lire l'e-mail de l'utilisateur actuel depuis
 `oai-authenticated-user-email`.
 
-SIWC-authenticated workspace sites may also receive
-`oai-authenticated-user-full-name` when the user's SIWC profile has a non-empty
-`name` claim. The full-name value is percent-encoded UTF-8 and is accompanied by
+Les sites workspace authentifiés via SIWC peuvent aussi recevoir
+`oai-authenticated-user-full-name` lorsque le profil SIWC de l'utilisateur a une revendication
+`name` non vide. La valeur du nom complet est encodée en UTF-8 percent-encoded et est accompagnée de
 `oai-authenticated-user-full-name-encoding: percent-encoded-utf-8`.
 
-Treat the full name as optional and fall back to email when it is absent:
+Traite le nom complet comme optionnel et retombe sur l'e-mail quand il est absent :
 
 ```tsx
 import { headers } from "next/headers";
@@ -61,53 +61,53 @@ export default async function Home() {
 }
 ```
 
-## Optional Dispatch-Owned ChatGPT Sign-In
+## Connexion ChatGPT optionnelle gérée par le dispatch
 
-Import the ready-to-use helpers from `app/chatgpt-auth.ts` when the site needs
-optional or required ChatGPT sign-in:
+Importe les helpers prêts à l'emploi depuis `app/chatgpt-auth.ts` quand le site a besoin
+d'une connexion ChatGPT optionnelle ou obligatoire :
 
-- Use `getChatGPTUser()` for optional signed-in UI.
-- Use `requireChatGPTUser(returnTo)` for server-rendered pages that should send
-  anonymous visitors through Sign in with ChatGPT.
-- In a Server Component, start sign-in with
-  `<a href={chatGPTSignInPath(returnTo)} target="_top">`. The auth helper
-  module is server-only; do not import it into a Client Component.
-- Do not use `fetch`, XHR, a client-side router, or a framework link that can
-  prefetch the sign-in route. SIWC must start as a top-level navigation.
-- Never request the AuthAPI authorization endpoint directly. The dispatch-owned
-  `/signin-with-chatgpt` route must start the SIWC flow.
-- Use `chatGPTSignOutPath(returnTo)` for browser sign-out links or actions.
-- Pass a same-origin relative `returnTo` path for the destination after sign-in
-  or sign-out. The helper validates and safely encodes it.
-- Mark protected pages with `export const dynamic = "force-dynamic"` because
-  they depend on per-request identity headers.
+- Utilise `getChatGPTUser()` pour une UI de connexion optionnelle.
+- Utilise `requireChatGPTUser(returnTo)` pour les pages rendues côté serveur qui doivent
+  rediriger les visiteurs anonymes vers la connexion avec ChatGPT.
+- Dans un Server Component, démarre la connexion avec
+  `<a href={chatGPTSignInPath(returnTo)} target="_top">`. Le module d'aide à l'authentification
+  est server-only ; ne l'importe pas dans un Client Component.
+- N'utilise pas `fetch`, XHR, un routeur côté client, ou un lien de framework qui pourrait
+  précharger la route de connexion. SIWC doit démarrer comme une navigation top-level.
+- Ne demande jamais directement le endpoint d'autorisation de l'AuthAPI. La route
+  `/signin-with-chatgpt` gérée par le dispatch doit démarrer le flux SIWC.
+- Utilise `chatGPTSignOutPath(returnTo)` pour les liens ou actions de déconnexion côté navigateur.
+- Passe un chemin `returnTo` relatif de même origine pour la destination après connexion
+  ou déconnexion. Le helper le valide et l'encode de façon sûre.
+- Marque les pages protégées avec `export const dynamic = "force-dynamic"` car
+  elles dépendent des en-têtes d'identité propres à chaque requête.
 
-Dispatch owns `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, the
-OAuth cookies, and identity header injection. Do not implement app routes for
-those reserved paths. Routes that do not import and call the helper remain
-anonymous-compatible.
+Le dispatch possède `/signin-with-chatgpt`, `/signout-with-chatgpt`, `/callback`, les
+cookies OAuth, et l'injection des en-têtes d'identité. N'implémente pas de routes d'application pour
+ces chemins réservés. Les routes qui n'importent pas et n'appellent pas le helper restent
+compatibles anonymes.
 
-SIWC establishes identity only; it does not prove workspace membership. Use the
-Sites hosting platform's access policy controls for workspace-wide restrictions,
-or enforce explicit server-side membership or allowlist checks.
+SIWC établit uniquement l'identité ; cela ne prouve pas l'appartenance au workspace. Utilise les
+contrôles de politique d'accès de la plateforme d'hébergement Sites pour les restrictions à l'échelle du workspace,
+ou applique des vérifications explicites d'appartenance ou de liste blanche côté serveur.
 
-Use SIWC for account pages, user-specific dashboards, saved records, and write
-actions tied to the current ChatGPT user. Leave public content anonymous.
+Utilise SIWC pour les pages de compte, les tableaux de bord propres à l'utilisateur, les enregistrements sauvegardés, et les actions d'écriture
+liées à l'utilisateur ChatGPT actuel. Laisse le contenu public anonyme.
 
-## Diagnostic Commands
+## Commandes de diagnostic
 
-- `npm run install:ci`: perform the one bounded lockfile install
-- `npm run dev`: start the Vite/Vinext development server
-- `npm run build`: build the deployable Sites artifact
-- `npm run start`: start the built Vinext application
-- `npm test`: build and verify the rendered development-preview metadata
-- `npm run db:generate`: generate Drizzle migrations after schema changes
+- `npm run install:ci` : effectue l'unique installation bornée du lockfile
+- `npm run dev` : démarre le serveur de développement Vite/Vinext
+- `npm run build` : construit l'artefact Sites déployable
+- `npm run start` : démarre l'application Vinext construite
+- `npm test` : construit et vérifie les métadonnées de prévisualisation de développement rendues
+- `npm run db:generate` : génère les migrations Drizzle après modification du schéma
 
-Use build commands for targeted diagnosis after a remote failure, not as part of the normal checkpoint path.
+Utilise les commandes de build pour un diagnostic ciblé après un échec distant, pas comme une étape normale avant un checkpoint.
 
-The timeout defaults can be overridden for a controlled canary with `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, and `SITES_BUILD_KILL_AFTER`. A timeout fails the command; the helpers never retry an unchanged install or build.
+Les timeouts par défaut peuvent être surchargés pour un canary contrôlé avec `SITES_INSTALL_TIMEOUT`, `SITES_INSTALL_KILL_AFTER`, `SITES_BUILD_TIMEOUT`, et `SITES_BUILD_KILL_AFTER`. Un timeout fait échouer la commande ; les scripts d'assistance ne relancent jamais une installation ou un build inchangés.
 
-## Learn More
+## En savoir plus
 
-- [vinext Documentation](https://github.com/cloudflare/vinext)
-- [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+- [Documentation vinext](https://github.com/cloudflare/vinext)
+- [Guide Drizzle D1](https://orm.drizzle.team/docs/get-started/d1-new)
