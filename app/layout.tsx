@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const siteUrl = "https://les-7-merveilles.vercel.app";
+const siteUrl = "https://les-7-merveilles-rho.vercel.app";
 
 const title = "Les Sept Merveilles du Monde";
 const description = "Un voyage éditorial immersif autour des sept nouvelles merveilles du monde.";
