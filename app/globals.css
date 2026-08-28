@@ -67,6 +67,7 @@ a { color:inherit; text-decoration:none; }
 .finale>a { margin-top:56px; padding:16px 0; border-bottom:1px solid; font-size:10px; text-transform:uppercase; letter-spacing:.2em; display:flex; gap:22px; }
 footer { min-height:180px; padding:45px 5vw; background:#cf5b3c; color:#fff; display:grid; grid-template-columns:1fr 1fr 1fr; align-items:end; }
 footer p { margin:0; text-align:center; font:400 13px/1.4 'Montserrat',sans-serif; }
+footer small { display:block; margin-top:6px; font-size:11px; opacity:.65; }
 footer>a { justify-self:end; font-size:9px; text-transform:uppercase; letter-spacing:.2em; }
 
 @media (max-width:900px) {

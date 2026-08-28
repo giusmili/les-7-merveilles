@@ -57,7 +57,7 @@ export default function Home() {
       </section>
 
       <section className="finale"><span className="section-index">03 / 03</span><p className="eyebrow dark">Le prochain départ</p><h2>Le monde est vaste.<br /><em>Commencez ici.</em></h2><a href="#accueil">Revenir au départ <span aria-hidden="true">↑</span></a></section>
-      <footer><div className="brand footer-brand"><span className="brand-mark">7</span><span>Merveilles<br />du monde</span></div><p>Un voyage éditorial autour des nouvelles merveilles du monde.</p><a href="#accueil">Haut de page</a></footer>
+      <footer><div className="brand footer-brand"><span className="brand-mark">7</span><span>Merveilles<br />du monde</span></div><p>Un voyage éditorial autour des nouvelles merveilles du monde.<br /><small>© {new Date().getFullYear()} GiusMili</small></p><a href="#accueil">Haut de page</a></footer>
     </main>
   );
 }
